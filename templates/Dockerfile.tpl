@@ -1,30 +1,34 @@
 FROM php:8.1-cli
 
-# Install system dependencies
+# Install dependencies
 RUN apt-get update && apt-get install -y \
     git \
     unzip \
     libcurl4-openssl-dev \
-    && docker-php-ext-install curl
-
-# Install Composer
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
-
-# Install gRPC PHP extension
-RUN pecl install grpc \
-    && docker-php-ext-enable grpc
+    protobuf-compiler \
+    && docker-php-ext-install curl \
+    && pecl install grpc && docker-php-ext-enable grpc
 
 # Set working directory
 WORKDIR /var/www
 
-# Copy existing application directory contents
-COPY . /var/www
+# Copy composer.lock and composer.json
+COPY composer.lock composer.json /var/www/
+
+# Install Composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # Install PHP dependencies
-RUN composer install
+RUN composer install --no-scripts --no-autoloader
 
-# Expose port for gRPC
+# Copy the rest of the application
+COPY . /var/www
+
+# Autoload dependencies
+RUN composer dump-autoload --optimize
+
+# Expose gRPC port
 EXPOSE 50051
 
-# Start the gRPC server
+# Start gRPC server
 CMD ["php", "grpc_server.php"]
