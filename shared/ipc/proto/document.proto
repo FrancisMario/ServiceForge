@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package document;
+
+service DocumentService {
+  rpc UploadDocument (UploadDocumentRequest) returns (UploadDocumentResponse);
+}
+
+message UploadDocumentRequest {
+  string user_id = 1;
+  string file_name = 2;
+}
+
+message UploadDocumentResponse {
+  string document_id = 1;
+}

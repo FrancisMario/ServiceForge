@@ -1,0 +1,31 @@
+{
+    "name": "monorepo/cli",
+    "description": "CLI for managing Laravel-based monorepo",
+    "type": "project",
+    "require": {
+        "laravel/framework": "^10.0",
+        "illuminate/console": "*",
+        "illuminate/config": "*",
+        "illuminate/filesystem": "*",
+        "illuminate/events": "^10.0",
+        "illuminate/log": "^10.0",
+        "illuminate/facades": "^10.0",
+        "symfony/process": "^6.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "App\\": "app/"
+        }
+    },
+    "scripts": {
+        "post-install-cmd": [
+            "@php artisan config:clear"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Mario Gomez",
+            "email": "me@mariogomez.gm"
+        }
+    ]
+}
