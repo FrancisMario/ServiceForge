@@ -1,4 +1,10 @@
-Welcome to the **Service Monorepo**! This repository is designed to manage multiple Laravel-based microservices, providing a foundation for scalable, modular application development. It leverages Docker for deployment, with the potential for Kubernetes orchestration in the future. Services in this monorepo communicate via **gRPC** for efficient inter-service communication, while retaining the ability to expose traditional REST APIs.
+
+
+
+![ServiceForge](https://github.com/user-attachments/assets/d39b668b-e666-40e7-8053-51939f7d4c76)
+
+
+**Service Monorepo**! is designed to manage multiple Laravel-based microservices, providing a foundation for scalable, modular application development. It leverages Docker for deployment, with the potential for Kubernetes orchestration in the future. Services in this monorepo communicate via **gRPC** for efficient inter-service communication, while retaining the ability to expose traditional REST APIs.
 
 ---
 
