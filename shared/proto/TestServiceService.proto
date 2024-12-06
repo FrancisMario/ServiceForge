@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package test_service;
+
+// The TestService service definition.
+service TestService {
+  // Example RPC method: Sends a greeting
+  rpc SayHello (TestServiceRequest) returns (TestServiceReply) {}
+}
+
+// The request message containing the user's name.
+message TestServiceRequest {
+  string name = 1;
+}
+
+// The response message containing the greetings.
+message TestServiceReply {
+  string message = 1;
+}

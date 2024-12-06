@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: test_service-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: test_service
+  template:
+    metadata:
+      labels:
+        app: test_service
+    spec:
+      containers:
+      - name: test_service
+        image: your-docker-repo/test_service:latest
+        ports:
+        - containerPort: 50051
+        env:
+        - name: APP_ENV
+          value: production
