@@ -55,33 +55,41 @@ class ProtoGenerate extends Command
     }
 
     protected function generateProtoClasses($serviceName)
-    {
-        $this->info("Processing service: $serviceName");
+{
+    $this->info("Processing service: $serviceName");
 
-        $servicePath = base_path("services/{$serviceName}");
-        $protoPath = "{$servicePath}/proto";
-        $outputPath = "{$servicePath}/app/Grpc";
+    $servicePath = base_path("services/{$serviceName}");
+    $protoPath = realpath(base_path('shared/proto')); // Resolve shared proto path
+    $outputPath = "{$servicePath}/app/Grpc";
 
-        if (!File::exists($protoPath)) {
-            $this->error("Proto directory not found for service '{$serviceName}'.");
-            return;
-        }
+    if (!$protoPath) {
+        $this->error("Proto directory not found for shared files.");
+        return;
+    }
 
-        // Ensure output directory exists
-        if (!File::exists($outputPath)) {
-            File::makeDirectory($outputPath, 0755, true);
-            $this->info("Created gRPC output directory at {$outputPath}.");
-        }
+    // Ensure output directory exists
+    if (!File::exists($outputPath)) {
+        File::makeDirectory($outputPath, 0755, true);
+        $this->info("Created gRPC output directory at {$outputPath}.");
+    }
 
-        // Compile proto files
-        // Ensure 'protoc' and 'grpc_php_plugin' are installed and accessible
+    // Compile proto files using grpc-tools
+    $protoFiles = glob("{$protoPath}/*.proto");
+    if (empty($protoFiles)) {
+        $this->error("No .proto files found in shared proto directory.");
+        return;
+    }
+
+    foreach ($protoFiles as $protoFile) {
+        $this->info("Processing proto file: {$protoFile}");
+
         $process = new Process([
-            'protoc',
+            'node',
+            base_path('scripts/protoc-compile.js'),
             "--proto_path={$protoPath}",
             "--php_out={$outputPath}",
             "--grpc_out={$outputPath}",
-            "--plugin=protoc-gen-grpc=/usr/local/bin/grpc_php_plugin", // Adjust path as needed
-            "{$protoPath}/*.proto"
+            $protoFile
         ]);
 
         $process->setTimeout(300);
@@ -90,10 +98,14 @@ class ProtoGenerate extends Command
         });
 
         if (!$process->isSuccessful()) {
-            $this->error("Failed to generate proto classes for service '{$serviceName}'.");
+            $this->error("Failed to generate proto classes for file '{$protoFile}': " . $process->getErrorOutput());
             return;
         }
 
-        $this->info("Proto classes generated for service '{$serviceName}'.");
+        $this->info("Generated proto classes for file '{$protoFile}'.");
     }
+
+    $this->info("Proto classes generation complete for service '{$serviceName}'.");
+}
+
 }
