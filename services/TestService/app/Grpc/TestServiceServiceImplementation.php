@@ -17,3 +17,9 @@ class TestServiceServiceImplementation implements TestServiceServiceInterface
         return $reply;
     }
 }
+
+// docker run -d --network service_network --name test-service -p 50051:50051 test-service:latest
+
+// docker rm -f test-service
+// docker build -t test-service:latest .
+// docker run -d --network service_network --name test-service -p 50051:50051 test-service:latest
